@@ -1,0 +1,37 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cron-mysql-backup
+spec:
+  schedule: "0 * * * *"
+  startingDeadlineSeconds: 60
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cron-backup-mysql
+            image: mysql:5.7.22
+            envFrom:
+            - configMapRef:
+                name: common-env
+            - secretRef:
+                name: common-env
+            command: ["bash",  "/mnt/backup-script/backup-db.sh"]
+            volumeMounts:
+            - name: backup-script
+              mountPath: /mnt/backup-script
+            - name: backup
+              mountPath: /mnt/backup
+          restartPolicy: Never
+          volumes:
+          - name: backup-script
+            configMap:
+              name: mysql-backup
+          - name: backup
+            persistentVolumeClaim:
+              claimName: backup-mysql
+          restartPolicy: Never

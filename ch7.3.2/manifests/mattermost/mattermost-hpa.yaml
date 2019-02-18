@@ -1,0 +1,17 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mattermost-hpa
+  namespace: default
+spec:
+  scaleTargetRef: # (1)
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mattermost
+  minReplicas: 1 # (2)
+  maxReplicas: 5 # (3)
+  metrics: # (4)
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 50

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-cm
+data: # キーバリューで設定情報を格納する (1)
+  DATABASE_HOST: db.example.com
+  nginx.conf: |
+    server{
+      listen 80 default;
+      server_name _;
+      access_log /dev/stdout;
+
+      location / {
+        root /var/www/html;
+        index index.html;
+      }
+    }

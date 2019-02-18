@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod # このオブジェクトの名前
+spec:
+  containers: # Podに含むコンテナのリスト (1)
+  - name: nginx         # コンテナの名前
+    image: k8spracticalguide/nginx:1.15.5 # コンテナイメージ
+    ports:
+    - containerPort: 80

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata: # 全てのオブジェクトが共通で持つメタ情報 (1)
+  name: my-pod
+  namespace: my-namespace
+  labels: # Labelの設定 (2)
+    environment: production
+    release: canary
+spec:
+spec:
+  containers: # Podに含むコンテナのリスト (1)
+  - name: nginx # コンテナの名前
+    image: k8spracticalguide/nginx:1.15.5 # コンテナイメージ
+    ports:
+    - containerPort: 80

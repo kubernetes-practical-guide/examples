@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-data-source-name
+type: Opaque
+data:
+  # '{MYSQL_USER}:{MYSQL_PASSWORD}@({MYSQL_SERVICE_DOMAIN}:3306)/' をBase64エンコードした値
+  DATA_SOURCE_NAME: ZXhwb3J0ZXI6ZXhwb3J0ZXJwYXNzd29yZEAobXlzcWwuZGVmYXVsdC5zdmMuY2x1c3Rlci5sb2NhbDozMzA2KS8=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqld-exporter
+spec:
+  selector:
+    matchLabels:
+      app: mysqld-exporter
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9104"
+      labels:
+        app: mysqld-exporter
+    spec:
+      containers:
+      - name: mysqld-exporter
+        image: k8spracticalguide/mysqld-exporter:v0.11.0
+        envFrom:
+        - secretRef:
+            name: mysql-data-source-name
+        ports:
+        - containerPort: 9104

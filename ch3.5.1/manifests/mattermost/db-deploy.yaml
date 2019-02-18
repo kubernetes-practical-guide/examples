@@ -1,0 +1,31 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: db
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: db
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: db
+    spec:
+      containers:
+      - image: mysql:5.7.22
+        name: db
+        envFrom:
+        - configMapRef:
+            name: common-env
+        - secretRef:
+            name: common-env
+        ports:
+        - containerPort: 3306
+        resources: {}
+status: {}

@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mysql
+spec:
+  podSelector:
+    matchLabels:
+      app: mysql
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: mattermost
+    ports:
+    - protocol: TCP
+      port: 3306
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          system: "true"
+    - podSelector:
+        matchLabels:
+          k8s-app: coredns
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53

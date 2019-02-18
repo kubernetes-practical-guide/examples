@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-rs
+spec:
+  replicas: 3 #Podレプリカ数 (1)
+  selector:
+    matchLabels:
+      app: my-rs
+  template: #Podレプリカの元となるPodテンプレート (2)
+    metadata:
+      labels:
+        app: my-rs
+    spec:
+      containers:
+      - name: nginx
+        image: k8spracticalguide/nginx:1.15.5

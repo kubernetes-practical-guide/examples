@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deploy
+spec:
+  replicas: 3 #Podレプリカの数
+  strategy: #デプロイ戦略の指定 (1)
+    type: RollingUpdate
+    rollingUpdate: # RollingUpdateの設定 (2)
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: my-deploy
+  template: #Podテンプレート
+    metadata:
+      labels:
+        app: my-deploy
+    spec:
+      containers:
+      - name: nginx
+        image: k8spracticalguide/nginx:1.15.5

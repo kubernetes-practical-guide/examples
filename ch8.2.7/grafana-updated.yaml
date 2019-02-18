@@ -1,0 +1,97 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-providers-config
+  labels:
+    app: grafana
+data:
+  dashboard-providers.yml: |
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: true
+      editable: false
+      options:
+        path: /var/lib/grafana/dashboards
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources-config
+  labels:
+    app: grafana
+data:
+  datasources.yml: |
+    apiVersion: 1
+    deleteDatasources:
+      - name: prometheus
+        orgId: 1
+
+    datasources:
+    - name: prometheus
+      type: prometheus
+      access: proxy
+      orgId: 1
+      url: http://prometheus.default.svc.cluster.local:9090
+      version: 1
+      editable: false
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  ports:
+  - port: 3000
+    targetPort: 3000
+  selector:
+    app: grafana
+  type: NodePort
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: k8spracticalguide/grafana:5.2.4
+        env:
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "true"
+        volumeMounts:
+        - name: provisioning-datasources
+          mountPath: /etc/grafana/provisioning/datasources
+        - name: provisioning-dashboard-providers
+          mountPath: /etc/grafana/provisioning/dashboards
+        - name: dashboard-data
+          mountPath: /var/lib/grafana/dashboards
+      volumes:
+      - name: provisioning-datasources
+        configMap:
+          name: grafana-datasources-config
+      - name: provisioning-dashboard-providers
+        configMap:
+          name: grafana-dashboard-providers-config
+      - name: dashboard-data
+        configMap:
+          name: grafana-dashboards

@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  MYSQL_DATABASE: mattermost
+  MYSQL_USER: myuser
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: common-env

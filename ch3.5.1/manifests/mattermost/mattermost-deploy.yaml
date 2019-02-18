@@ -1,0 +1,53 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: mattermost
+  name: mattermost
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: mattermost
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: mattermost
+    spec:
+      containers:
+      - image: k8spracticalguide/mattermost
+        name: mattermost
+        env:
+        - name: MM_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: common-env
+              key: MYSQL_USER
+        - name: MM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: common-env
+              key: MYSQL_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: common-env
+              key: MYSQL_DATABASE
+        - name: DB_HOST
+          value: ""
+        ports:
+        - containerPort: 8065
+        volumeMounts:
+        - name: cm-volume
+          mountPath: /mattermost/config
+      volumes:
+      - name: cm-volume
+        configMap:
+          name: mm-config-file
+          items:
+          - key: config.json
+            path: config.json
+status: {}

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cm-env2
+spec:
+  containers:
+  - name: nginx
+    image: k8spracticalguide/nginx:1.15.5
+    envFrom: # ConfigMap my-cmの全てのdataが環境変数として定義される (5)
+    - configMapRef:
+        name: my-cm

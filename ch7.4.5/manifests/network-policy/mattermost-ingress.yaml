@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mattermost
+spec:
+  rules:
+  - host: chat.127.0.0.1.nip.io
+    http:
+      paths:
+      - backend:
+          serviceName: mattermost
+          servicePort: 8065

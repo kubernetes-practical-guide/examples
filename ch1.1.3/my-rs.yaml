@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-rs
+spec:
+  replicas: 3 #コンテナを作成する数
+  selector:
+    matchLabels:
+      app: my-rs
+  template: #コンテナの設定情報
+    metadata:
+      labels:
+        app: my-rs
+    spec:
+      containers:
+      - name: nginx
+        image: k8spracticalguide/nginx:1.15.5 #コンテナイメージの指定

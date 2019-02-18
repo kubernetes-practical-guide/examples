@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mattermost
+  name: mattermost
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mattermost
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mattermost
+    spec:
+      containers:
+      - image: k8spracticalguide/mattermost:4.10.2
+        name: mattermost
+        env:
+        - name: MM_USERNAME
+          value: myuser
+        - name: MM_PASSWORD
+          value: mypassword
+        - name: DB_NAME
+          value: mattermost
+        - name: DB_HOST
+          value: ""
+        resources: {}
+status: {}

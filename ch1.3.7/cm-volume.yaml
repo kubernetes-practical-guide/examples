@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cm-volume
+spec:
+  containers:
+  - name: nginx
+    image: k8spracticalguide/nginx:1.15.5
+    ports:
+    - containerPort: 80
+    volumeMounts: # コンテナ内でマウントするVolumeのリスト (3)
+    - name: my-cm # 下記のVolumeの名前と一致しなければならない
+      readOnly: true
+      mountPath: /var/nginx
+  volumes: # コンテナでマウントするVolumeのリスト (2)
+  - name: my-cm # Volumeの名前
+    configMap:
+      name: my-cm # ConfigMap名と一致しなければならない
+      items: # 省略するとdataの全てがファイルとして配置される
+      - key: nginx.conf # dataのキー名
+        path: nginx.conf # 別名として配置することもできる

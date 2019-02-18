@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-svc
+  namespace: default
+spec:
+  type: ClusterIP
+  selector: # Podの集合をグルーピングするLabelセレクタ (1)
+    app: nginx
+  ports: # 公開するポートのリスト (2)
+  - protocol: TCP
+    port: 8080 #サービスが公開するポート
+    targetPort: 80 #転送先のPodのポート

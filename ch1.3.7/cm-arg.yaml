@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cm-arg
+spec:
+  restartPolicy: Never # 再起動のポリシー
+  containers:
+  - name: busybox
+    image: k8spracticalguide/busybox:1.28
+    command: ["/bin/sh", "-c", "echo $(DATABASE_HOST)"] # 環境変数として定義したConfigMapを参照する (6)
+    env: # 環境変数として設定
+    - name: DATABASE_HOST # 設定する環境変数名
+      valueFrom:
+        configMapKeyRef:
+          name: my-cm # ConfigMap名を指定
+          key: DATABASE_HOST # ConfigMapのキー名を指定

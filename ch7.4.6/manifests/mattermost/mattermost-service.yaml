@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mattermost
+  name: mattermost
+spec:
+  ports:
+  - port: 8065
+    protocol: TCP
+    targetPort: 8065
+  selector:
+    app: mattermost
+  type: NodePort
+status:
+  loadBalancer: {}

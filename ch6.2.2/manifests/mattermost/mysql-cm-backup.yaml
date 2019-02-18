@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-backup
+data:
+  backup-db.sh: |
+    #!/bin/bash
+  
+    set -e
+    echo "Execute backup-db.sh"
+    MYSQLM="mysql -h mysql-0.mysql --user=root --password=${MYSQL_ROOT_PASSWORD}"
+    MYSQLDUMP="mysqldump -h mysql-0.mysql --user=root --password=${MYSQL_ROOT_PASSWORD}"
+
+    $MYSQLM -e 'FLUSH TABLES WITH READ LOCK;'
+    log_file=$($MYSQLM -e 'SHOW MASTER STATUS\G;' | grep File: | awk '{print $2}')
+    pos=$($MYSQLM -e 'SHOW MASTER STATUS\G;' | grep Position: | awk '{print $2}')
+    datestamp=$(date +%Y%m%d)
+    backupname="/mnt/backup/${MYSQL_DATABASE}-${datestamp}-${log_file}-${pos}.dump"
+    ${MYSQLDUMP} "${MYSQL_DATABASE}" > "${backupname}"
+    $MYSQLM -e 'UNLOCK TABLES;'
+
+    exit 0

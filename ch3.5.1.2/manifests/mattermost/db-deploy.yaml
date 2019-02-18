@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: db
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: db
+    spec:
+      containers:
+      - image: k8spracticalguide/mysql:5.7.22
+        name: mysql
+        envFrom:
+        - configMapRef:
+            name: common-env
+        - secretRef:
+            name: common-env
+        resources: {}
+status: {}
